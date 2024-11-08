@@ -1,0 +1,7 @@
+dn: olcDatabase={2}mdb,cn=config
+changetype: modify
+replace: olcAccess
+olcAccess: to *
+  by dn.exact="cn=admin,dc=mail,dc=com" write
+  by anonymous none
+  by * none

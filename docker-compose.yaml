@@ -1,0 +1,61 @@
+services:
+  mailserver:
+    image: ghcr.io/docker-mailserver/docker-mailserver:latest
+    container_name: docker-mailserver
+    # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+    hostname: mail.xxx.xxx
+    env_file: docker-mailserver/.env
+    ports:
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+      - "993:993"  # IMAP4 (implicit TLS)
+    volumes:
+      - ./docker-mailserver/docker-data/dms/mail-data/:/var/mail/
+      - ./docker-mailserver/docker-data/dms/mail-state/:/var/mail-state/
+      - ./docker-mailserver/docker-data/dms/mail-logs/:/var/log/mail/
+      - ./docker-mailserver/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    stop_grace_period: 1m
+    # Uncomment if using `ENABLE_FAIL2BAN=1`:
+    cap_add:
+      - NET_ADMIN
+    healthcheck:
+      test: "ss --listening --tcp | grep -P 'LISTEN.+:smtp' || exit 1"
+      timeout: 3s
+      retries: 0
+    networks:
+      - ldap_network
+
+  ldap:
+    restart: always
+    build:
+      context: ./openldap
+    ports:
+      - '389:1389'
+      - '636:1636'
+    env_file: openldap/.env
+    networks:
+      - ldap_network
+    volumes:
+      - 'openldap_data:/bitnami/openldap'
+
+  phpldapadmin:
+    restart: always
+    image: osixia/phpldapadmin:latest
+    environment:
+      - PHPLDAPADMIN_LDAP_HOSTS=ldap://ldap:1389
+    ports:
+      - "6443:443"
+    networks:
+      - ldap_network
+
+networks:
+  ldap_network:
+    driver: bridge
+
+volumes:
+  openldap_data:
+    driver: local
