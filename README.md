@@ -1,7 +1,7 @@
 # ldapmail
 
-This repository provides a Dockerized solution combining docker-mailserver for hosting a secure and
-customizable mail server with OpenLDAP for centralized user authentication and management. It allows
+Dockerized solution combining docker-mailserver with OpenLDAP for centralized user authentication
+and management. It allows
 you to quickly set up a self-hosted email system with LDAP integration, offering an easy-to-deploy
 and scalable solution for both email and user management.
 
