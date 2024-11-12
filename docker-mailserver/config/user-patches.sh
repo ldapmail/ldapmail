@@ -36,7 +36,7 @@ result_attribute = mailForwardingAddress
 version = 3
 EOF
 
-DMS_SMTPD_SENDER_RESTRICTIONS="dms_smtpd_sender_restrictions = check_sender_access ldap:/etc/postfix/ldap-receiveonly.cf, reject, permit_sasl_authenticated, permit_mynetworks, reject_unknown_sender_domain"
+DMS_SMTPD_SENDER_RESTRICTIONS="dms_smtpd_sender_restrictions = permit_mynetworks, check_sender_access ldap:/etc/postfix/ldap-receiveonly.cf, reject_unauth_destination, reject_unknown_sender_domain, permit_sasl_authenticated"
 VIRTUAL_ALIAS_MAPS="virtual_alias_maps = ldap:/etc/postfix/ldap-aliases.cf, ldap:/etc/postfix/ldap-groups.cf, ldap:/etc/postfix/ldap-forwarding.cf"
 
 sed -i "s|^dms_smtpd_sender_restrictions.*|$DMS_SMTPD_SENDER_RESTRICTIONS|" /etc/postfix/main.cf
