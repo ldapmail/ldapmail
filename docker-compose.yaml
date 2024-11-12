@@ -12,11 +12,17 @@ services:
       - "587:587"  # ESMTP (explicit TLS => STARTTLS)
       - "993:993"  # IMAP4 (implicit TLS)
     volumes:
-      - ./docker-mailserver/docker-data/dms/mail-data/:/var/mail/
-      - ./docker-mailserver/docker-data/dms/mail-state/:/var/mail-state/
-      - ./docker-mailserver/docker-data/dms/mail-logs/:/var/log/mail/
-      - ./docker-mailserver/config/:/tmp/docker-mailserver/
+      - 'mail_data_vol1:/var/mail/vol_1/'
+
+      # For scalability, you can add more volumes for mail data.
+      # In LDAP, you can create more mail users and assign them to different volumes.
+      #- 'mail_data_vol2:/var/mail/vol_2/'
+
+      - 'mail_state:/var/mail-state/'
+      - 'mail_logs:/var/log/mail/'
+      - 'mail_config:/tmp/docker-mailserver/'
       - /etc/localtime:/etc/localtime:ro
+      - /etc/letsencrypt:/etc/letsencrypt
     restart: always
     stop_grace_period: 1m
     # Uncomment if using `ENABLE_FAIL2BAN=1`:
@@ -28,7 +34,6 @@ services:
       retries: 0
     networks:
       - ldap_network
-
   ldap:
     restart: always
     build:
@@ -40,22 +45,59 @@ services:
     networks:
       - ldap_network
     volumes:
+      - /etc/letsencrypt/live/mail.xxx.xxx/privkey.pem:/opt/bitnami/openldap/certs/privkey.pem
+      - /etc/letsencrypt/live/mail.xxx.xxx/fullchain.pem:/opt/bitnami/openldap/certs/fullchain.pem
       - 'openldap_data:/bitnami/openldap'
-
   phpldapadmin:
     restart: always
+    hostname: mail.xxx.xxx
     image: osixia/phpldapadmin:latest
     environment:
       - PHPLDAPADMIN_LDAP_HOSTS=ldap://ldap:1389
+      - PHPLDAPADMIN_HTTPS=false
     ports:
-      - "6443:443"
+      - "6443:80"
     networks:
       - ldap_network
-
 networks:
   ldap_network:
     driver: bridge
-
 volumes:
+  mail_data_vol1:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /mnt/volume_nyc1_01/mail_data
+      # For scalability, you can add more volumes for mail data.
+      # In LDAP, you can create more mail users and assign them to different volumes.
+      #mail_data_vol2:
+        #driver: local
+        #driver_opts:
+          #o: bind
+          #type: none
+          #device: /mnt/volume_2/mail_data
+  mail_config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /mnt/volume_nyc1_01/mail_config
+  mail_state:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /mnt/volume_nyc1_01/mail_state
+  mail_logs:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /mnt/volume_nyc1_01/mail_logs
   openldap_data:
     driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: /mnt/volume_nyc1_01/openldap
