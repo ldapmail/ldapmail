@@ -72,3 +72,6 @@ in order to stop the services:
 ```bash
 $ docker-compose down
 ```
+
+## Contributors
+- https://github.com/Codenetz
