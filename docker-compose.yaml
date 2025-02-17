@@ -65,8 +65,6 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: unless-stopped
-    ports:
-      - "9090:9090"
     volumes:
       - prometheus_data:/prometheus
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
@@ -81,7 +79,6 @@ services:
     restart: unless-stopped
     networks:
       - ldap_network
-
 #  Uncomment the following lines if you want to monitor the host machine.
 #  node_exporter:
 #    image: quay.io/prometheus/node-exporter:latest
@@ -93,7 +90,6 @@ services:
 #    restart: unless-stopped
 #    volumes:
 #      - '/:/host:ro,rslave'
-
   postfixscraper:
     build: ./postfix_scraper
     container_name: postfix_scraper
@@ -101,14 +97,11 @@ services:
     restart: unless-stopped
     depends_on:
       - mailserver
-    ports:
-      - "9555:9555"
     networks:
       - ldap_network
     volumes:
       - /mnt/volume_nyc1_01/mail_logs/mail.log:/var/log/mail.log:ro
       - ./postfix_scraper/postfix_scraper.py:/app/postfix_scraper.py
-
   ldapscraper:
     build: ./ldap_scraper
     container_name: ldap_scraper
@@ -116,14 +109,11 @@ services:
     restart: unless-stopped
     depends_on:
       - mailserver
-    ports:
-      - "9777:9777"
     networks:
       - ldap_network
     volumes:
       - 'mail_data_vol1:/var/mail/vol_1/'
       - ./ldap_scraper/ldap_scraper.py:/app/ldap_scraper.py
-
   grafana:
     image: grafana/grafana-oss:latest
     container_name: grafana
