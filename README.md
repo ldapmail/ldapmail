@@ -17,6 +17,14 @@ OpenLDAP with custom schema for mail accounts and phpldapadmin.
 
 [Docs for setting up OpenLDAP](openldap/README.md)
 
+## Grafana + Prometheus + LDAP and Postfix metric exporter
+
+Monitor your mail server with Grafana and Prometheus.
+
+[Docs for setting up LDAP exporter](ldap_scraper/README.md)
+
+[Docs for setting up Postfix exporter](postfix_scraper/README.md)
+
 ## TypeScript utility library
 
 A TypeScript utility library for managing LDAP authentication and IMAP email operations with
