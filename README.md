@@ -61,6 +61,10 @@ Steps to set up the system:
 
    https://mxtoolbox.com/deliverability
 
+8. Monitoring
+ - Prometheus
+ - Grafana
+
 To start the services, ensure your `.env` files and `docker-compose.yml` are configured, then run:
 
 ```bash
