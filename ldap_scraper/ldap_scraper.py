@@ -12,12 +12,12 @@ load_dotenv()
 DEBUG = os.getenv('DEBUG', 'false').lower() == 'true'
 LOG_INTERVAL_MIN = int(os.getenv('LOG_INTERVAL_MIN', 1))
 
-LDAP_SERVER = os.getenv('LDAP_SERVER', 'ldap://ldap:1389')  # Replace with your LDAP server
-BASE_DN = os.getenv('BASE_DN', 'dc=mail,dc=com')  # Replace with your base DN
-BIND_DN = os.getenv('BIND_DN', 'cn=admin,dc=mail,dc=com')  # Replace with your bind DN
-PASSWORD = os.getenv('PASSWORD', 'admin$')  # Replace with your password
+LDAP_SERVER = os.getenv('LDAP_SERVER', 'ldap://ldap:1389')
+BASE_DN = os.getenv('BASE_DN', 'dc=mail,dc=com')
+BIND_DN = os.getenv('BIND_DN', 'cn=admin,dc=mail,dc=com')
+PASSWORD = os.getenv('PASSWORD', 'admin$')
 
-MAIL_PATH = '/var/mail/vol_1'
+MAIL_PATH = os.getenv('MAIL_PATH', '/var/mail/vol_1')
 
 app = Flask(__name__)
 
