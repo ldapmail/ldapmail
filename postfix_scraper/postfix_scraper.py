@@ -45,8 +45,8 @@ def parse_mail_log(minutes):
                 incoming_sent_count, incoming_rejected_count, incoming_deferred_count, incoming_bounced_count, incoming_queued_count, incoming_unknown_count
 
     for line in lines:
-        outgoing_pattern = r"(?P<date>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+[\+\-]\d{2}:\d{2}).*?postfix/smtp.*?status=(?P<status>\w+)"
-        incoming_pattern = r"(?P<date>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+[\+\-]\d{2}:\d{2}).*?postfix/lmtp.*?status=(?P<status>\w+)"
+        outgoing_pattern = r"(?P<date>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+[\+\-]\d{2}:\d{2}).*?postfix/smtp\[.*?status=(?P<status>\w+)"
+        incoming_pattern = r"(?P<date>\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+[\+\-]\d{2}:\d{2}).*?postfix/lmtp\[.*?status=(?P<status>\w+)"
 
         # Outgoing Match status log lines
         outgoing_status_match = re.search(outgoing_pattern, line)
